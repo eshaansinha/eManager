@@ -27,6 +27,7 @@ import com.example.emanager.views.fragments.TransactionsFragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.tabs.TabLayout;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -93,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getTransactions() {
         viewModel.getTransactions(calendar);
-    }
-
+        }
 
 
 

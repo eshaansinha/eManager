@@ -25,6 +25,9 @@ import com.example.emanager.utils.Helper;
 import com.example.emanager.views.activites.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -153,10 +156,55 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
             transaction.setNote(note);
 
             ((MainActivity)getActivity()).viewModel.addTransaction(transaction);
+            sendPostRequest();
             ((MainActivity)getActivity()).getTransactions();
             dismiss();
         });
 
         return binding.getRoot();
+    }
+
+    private void sendPostRequest() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // URL of the Zapier webhook
+                    URL url = new URL("https://hooks.zapier.com/hooks/catch/18244317/262t19f/");
+
+                    // Establishing a connection
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setDoOutput(true);
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                    // Data to send in the POST request
+                    String jsonInputString = "{"
+                            + "\"type\": \"" + transaction.getType() + "\","
+                            + "\"amount\": " + transaction.getAmount() + ","
+                            + "\"date\": \"" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(transaction.getDate()) + "\","
+                            + "\"category\": \"" + transaction.getCategory() + "\","
+                            + "\"account\": \"" + transaction.getAccount() + "\","
+                            + "\"note\": \"" + transaction.getNote() + "\""
+                            + "}";
+                    // Sending the data
+                    try (OutputStream os = urlConnection.getOutputStream()) {
+                        byte[] input = jsonInputString.getBytes("utf-8");
+                        os.write(input, 0, input.length);
+                    }
+
+                    // Getting the response code to ensure the request was successful
+                    int responseCode = urlConnection.getResponseCode();
+                    System.out.println("Response Code: " + responseCode);
+
+                    urlConnection.disconnect();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 }
