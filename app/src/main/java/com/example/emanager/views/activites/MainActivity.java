@@ -1,5 +1,13 @@
 package com.example.emanager.views.activites;
 
+import in.slanglabs.convaai.copilot.platform.ConvaAIOptions;
+import in.slanglabs.convaai.copilot.platform.action.*;
+import in.slanglabs.convaai.copilot.platform.ConvaAICopilot;
+import in.slanglabs.convaai.copilot.platform.*;
+import in.slanglabs.convaai.copilot.platform.action.ConvaAIHandler;
+import in.slanglabs.convaai.copilot.platform.ui.ConvaAISuggestion;
+import in.slanglabs.convaai.core.ConvaAI;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -56,6 +64,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        ConvaAI.init("ea0de55b88104691b5b514700f159d47", "19dfc4b7b2eb48f190a1bb8c25f49cc7", "11.0.0", getApplication());
+        ConvaAIOptions options = new ConvaAIOptions.Builder()
+                .setCapabilityHandler(new ConvaAIHandler() {
+                    @Override
+                    public void onCapability(@NonNull ConvaAIResponse response, @NonNull ConvaAIInteraction interactionData, boolean isFinal) {
+                        // Handle the response from the assistant
+                    }
+                })
+                .setSuggestionHandler(new ConvaAISuggestionHandler() {
+                    @Override
+                    public void onSuggestion(@NonNull ConvaAISuggestion suggestion) {
+                        // Handle the selected suggestion
+                    }
+                })
+                .build();
+        ConvaAICopilot.setup(options);
+
+
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 

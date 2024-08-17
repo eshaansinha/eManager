@@ -1,6 +1,9 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://gitlab.com/api/v4/projects/25706948/packages/maven"
+        }
     }
     dependencies {
         classpath "io.realm:realm-gradle-plugin:10.15.1"
@@ -11,3 +14,4 @@ plugins {
     id 'com.android.application' version '8.5.2' apply false
     id 'com.android.library' version '8.5.2' apply false
 }
+
